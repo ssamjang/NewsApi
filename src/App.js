@@ -76,9 +76,10 @@ function SearchBar(props) {
 }
 
 function App() {
-  const { loading, headlines, error } = useNewsArticles();
+  
   const [search, setSearch] = useState(""); 
   const [test, setTest] = useState("");
+  const { loading, headlines, error } = useNewsArticles(search);
 
   if (loading) {
     return <p>Loading...</p>;
