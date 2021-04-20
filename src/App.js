@@ -13,11 +13,11 @@ function LikeCounter() {
     setCount((oldCount) => oldCount - 1)
   }
   return(
-    <div>
+    <tr>
       <p>Overall Count: {count}</p>
       <button onClick={increment}>Like</button>
       <button onClick={decrement}>Dislike</button>
-    </div>
+    </tr>
   )
 }
 
@@ -49,20 +49,26 @@ function Tablerow(props) {
   )
 }
 
-function SearchBar() {
+function SearchBar(props) {
+  // Search held by the search bar itself before actual submit
+  const [innerSearch, setInnerSearch] = useState(""); 
+
   return(
     <div>
+      <p>{innerSearch}</p>
       <input
         aria-labelledby="search-button"
         name="search"
         id="search"
         type="search"
+        value={innerSearch}
+        onChange={e => setInnerSearch(e.target.value)}
         ></input>
       <button
         id="search-button"
-        type="button">
-          {/*Set the button to button type b/c its not a form so the page
-          wont try to submit anything*/}
+        type="button"
+        onClick={() => props.onSubmit(innerSearch)}
+        >
           Search
         </button>
     </div>
@@ -71,7 +77,9 @@ function SearchBar() {
 
 function App() {
   const { loading, headlines, error } = useNewsArticles();
-  //no guarantee that title will be unique- add a key (in this case, url)
+  const [search, setSearch] = useState(""); 
+  const [test, setTest] = useState("");
+
   if (loading) {
     return <p>Loading...</p>;
   }
@@ -81,7 +89,11 @@ function App() {
   return (
     <div className="App">
       <h1>News Headlines</h1>
-      <SearchBar />
+      {/*on submit in searchbar, you set the APP level search 
+        to what ever the user has typed. This 'links' innerSearch
+        with the outer App search so it's consistent*/}
+      <SearchBar onSubmit={setSearch} />
+  
       <table>
         {headlines.map((headline) => (
           // headline is now an object
